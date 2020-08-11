@@ -1,24 +1,27 @@
+require('dotenv').config()
 
-const express = require('express');
-const app = express();
+const knex = require('knex')
+const app = require('./app');
 const cors = require('cors');
-const {CLIENT_ORIGIN} = require('./config');
-
+const { DB_URL } = require('./config')
 app.use(
     cors({
-        origin: CLIENT_ORIGIN
     })
 );
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
-app.get('/api/*', (req, res) => {
-  res.json({ok: true});
-});
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send('Hello worlddd')
 })
+
+const db = knex({
+  client: 'pg',
+  connection: DB_URL,
+})
+
+app.set('db', db)
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
